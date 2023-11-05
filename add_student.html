@@ -1,0 +1,89 @@
+
+
+  <div class="col-12">
+    <form id="add_student_form">
+
+        <div class="mb-3">
+            <label for="sname" class="form-label">Student Name</label>
+            <input type="text" name="name" class="form-control" id="sname">
+          </div>
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Student Email address</label>
+          <input type="email" name="email" class="form-control" id="exampleInputEmail1">
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Password</label>
+          <input type="password" name="password" class="form-control" id="exampleInputPassword1">
+        </div>
+        <!-- <div class="mb-3">
+            <label for="disabledSelect" class="form-label">Course</label>
+            <select id="disabledSelect" class="form-control">
+              <option selected>Select Course</option>
+            </select>
+          </div> -->
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+ </div>
+ 
+
+
+
+ <script>
+   
+         var request;
+
+$("#add_student_form").submit(function (event) {
+// alert(document.getElementById("imagesuploadform").value);
+    // Prevent default posting of form - put here to work in case of errors
+    event.preventDefault();
+
+    // Abort any pending request
+    if (request) {
+        request.abort();
+    }
+    // setup some local variables
+    // var formData = new FormData(this);
+    var name = $("#sname").val();
+    var email = $("#exampleInputEmail1").val();
+    var pass = $("#exampleInputPassword1").val();
+    
+    // var dateFormat= new Date();
+    // formData.append("sender_id", user_ida);
+    // msgarea
+    // var messaga = document.getElementById("msgarea").value;
+    // console.log(formData)
+    document.getElementById("loader1").style.visibility = "visible";
+    var data = JSON.stringify({
+      name: name, email:email, password:pass
+  })
+    $.ajax({
+        type: "post",
+        data: data,
+        contentType: "application/json",
+        url: `${baseurl}/student-registration`,
+        success: function (result) {
+          Swal.fire({
+                                  icon: 'success',
+                                  title: 'Successful!',
+                                  text: result.message,
+                                  allowOutsideClick: false
+                                })
+                                $( 'button.swal2-confirm' ).click(function() {
+                                  location.reload();
+                                });
+            document.getElementById("loader1").style.visibility = "hidden";
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+          var msg = JSON.parse( XMLHttpRequest.responseText);
+          Swal.fire({
+                                  icon: 'error',
+                                  title: 'Failed!',
+                                  text: msg.message,
+                                })
+
+          document.getElementById("loader1").style.visibility = "hidden";
+        // alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+    },
+    });
+});
+ </script>

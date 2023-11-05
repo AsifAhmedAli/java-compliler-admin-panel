@@ -1,0 +1,109 @@
+
+
+  <div class="col-12">
+    <form id="add_assignment_form">
+
+        <div class="mb-3">
+            <label for="sname" class="form-label">Assignment Name</label>
+            <input type="text" name="name" class="form-control" id="aname">
+          </div>
+        <div class="mb-3">
+          <label for="question" class="form-label">Question</label>
+          <textarea name="question" id="question" cols="30"  class="form-control" rows="10"></textarea>
+          <!-- <input type="email" name="email"> -->
+        </div>
+        <div class="mb-3">
+          <label for="answer" class="form-label">Answer</label>
+          <input type="text" name="answer" class="form-control" id="answer">
+        </div>
+        <div class="mb-3">
+            <label for="cid" class="form-label">Course</label>
+            <select id="cid" class="form-control">
+              <option selected>Select Course</option>
+            </select>
+          </div>
+        <button type="submit" class="btn btn-primary">Add</button>
+      </form>
+ </div>
+ 
+
+
+
+ <script>
+   $.ajax({
+        type: "get",
+        contentType: "application/json",
+        url: `${baseurl}/get-courses-whole-list`,
+        success: function (result) {
+          console.log(result)
+          
+          result.forEach(element => {
+            document.getElementById("cid").innerHTML += `<option value="${element.id}">${element.cname}</option>`;
+          });
+          
+            document.getElementById("loader1").style.visibility = "hidden";
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+          var msg = JSON.parse( XMLHttpRequest.responseText);
+          document.getElementById("loader1").style.visibility = "hidden";
+        // alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+    },
+    });
+         var request;
+
+$("#add_assignment_form").submit(function (event) {
+// alert(document.getElementById("imagesuploadform").value);
+    // Prevent default posting of form - put here to work in case of errors
+    event.preventDefault();
+
+    // Abort any pending request
+    if (request) {
+        request.abort();
+    }
+    // setup some local variables
+    // var formData = new FormData(this);
+    var aname = $("#aname").val();
+    var question = $("#question").val();
+    var answer = $("#answer").val();
+    var cid = $("#cid").val();
+    
+    // var dateFormat= new Date();
+    // formData.append("sender_id", user_ida);
+    // msgarea
+    // var messaga = document.getElementById("msgarea").value;
+    // console.log(formData)
+    document.getElementById("loader1").style.visibility = "visible";
+    var data = JSON.stringify({
+      aname:aname, question:question,answer:answer, cid: cid
+  })
+    $.ajax({
+        type: "post",
+        data: data,
+        contentType: "application/json",
+        url: `${baseurl}/add-assignment`,
+        success: function (result) {
+          Swal.fire({
+                                  icon: 'success',
+                                  title: 'Successful!',
+                                  text: result.message,
+                                  allowOutsideClick: false
+                                })
+                                $( 'button.swal2-confirm' ).click(function() {
+                                  location.reload();
+                                });
+            document.getElementById("loader1").style.visibility = "hidden";
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+          var msg = JSON.parse( XMLHttpRequest.responseText);
+          Swal.fire({
+                                  icon: 'error',
+                                  title: 'Failed!',
+                                  text: msg.message,
+                                })
+
+          document.getElementById("loader1").style.visibility = "hidden";
+        // alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+    },
+    });
+});
+ </script>

@@ -1,0 +1,231 @@
+<style>
+  .haove:hover{
+    cursor: pointer;
+  }
+</style>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Created On</th>
+            <th scope="col">Email</th>
+            <th scope="col">Password</th>
+            <th scope="col">Status</th>
+            <!-- <th scope="col">Delivery Address</th>
+            <th scope="col">Edit</th> -->
+        </tr>
+    </thead>
+    <tbody id="student_list">
+
+    </tbody>
+  </table>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Order Status</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+          <table class="table" style="overflow: auto;">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Course Name</th>
+                <th scope="col">Created On</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody id="clist">
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+//       var request;
+//       $("#statusform").submit(function (event) {
+//         var myModal = new bootstrap.Modal(document.getElementById("exampleModal"), {
+//             keyboard: false,
+//         });
+//         myModal.hide();
+     
+//   // Prevent default posting of form - put here to work in case of errors
+//   event.preventDefault();
+
+//   // Abort any pending request
+//   if (request) {
+//     request.abort();
+//   }
+//   document.getElementById("loader1").style.visibility = "visible";
+//   var status = document.getElementById("status").value;
+//   var orderid = document.getElementById("orderid").value;
+//   data = JSON.stringify({
+//     status: status,
+//   });
+//   // console.log(devicetype);
+//   $.ajax({
+//     type: "post",
+//     url: `${baseurl}/admin/update-order-status/${orderid}`,
+//     timeout: 0,
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//       "Content-Type": "application/json",
+//     },
+//     data: data,
+//     success: function (response) {
+//       Swal.fire({
+//         icon: "success",
+//         title: "Successful!",
+//         text: "Order Updated Successfully",
+//         allowOutsideClick: false,
+//       });
+//       $("button.swal2-confirm").click(function () {
+//         // all_orders();
+//           window.location.reload();
+//       });
+//       document.getElementById("loader1").style.visibility = "hidden";
+//     },
+//     error: function (response) {
+//     //   console.log(response);
+
+//     //   if (response.responseJSON.message == "Already Ordered") {
+//     //     Swal.fire({
+//     //       icon: "error",
+//     //       title: "Failed!",
+//     //       text: response.responseJSON.message,
+//     //       allowOutsideClick: false,
+//     //     });
+//     //     $("button.swal2-confirm").click(function () {
+//     //       window.location.reload();
+//     //     });
+//     //   }
+//     },
+//   });
+// });
+var i = 0;
+var statusq;
+   $.ajax({
+        type: "get",
+        contentType: "application/json",
+        url: `${baseurl}/get-students-whole-list`,
+        success: function (result) {
+          // console.log(result)
+          // created_at
+          result.forEach(element => {
+            if(element.status1 == 1){
+              statusq = "Active"
+            }
+            else{
+              statusq = "Inactive"
+            }
+            document.getElementById("student_list").innerHTML += `<tr>
+        <th scope="row">${++i}</th>
+        <td style="color: blue;" class="haove" onclick="myfunction('${element.id}')">${element.sname}</td>
+        <td>${element.created_at}</td>
+        <td>${element.email}</td>
+        <td>${element.pass}</td>
+        <td>${statusq}</td>
+        
+      </tr>`;
+          });
+          
+            document.getElementById("loader1").style.visibility = "hidden";
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+          var msg = JSON.parse( XMLHttpRequest.responseText);
+          document.getElementById("loader1").style.visibility = "hidden";
+        // alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+    },
+    });
+
+    function myfunction(x){
+      // alert(x);
+      document.getElementById("clist").innerHTML = "";
+      var i = 0;
+      $('#exampleModal').modal('show')
+      // /get-courses-of-one-student/:id
+      $.ajax({
+        type: "get",
+        contentType: "application/json",
+        url: `${baseurl}/get-courses-of-one-student/${x}`,
+        success: function (result) {
+          // console.log(result)
+          // created_at
+          result.forEach(element => {
+            document.getElementById("clist").innerHTML += `<tr>
+        <th scope="row">${++i}</th>
+        <td>${element.cname}</td>
+        <td>${element.created_at}</td>
+        <td><button class="btn btn-primary"  onclick="unenroll('${x}', ${element.id})">Unenroll</button></td>
+        
+      </tr>`;
+          });
+          
+            document.getElementById("loader1").style.visibility = "hidden";
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+          var msg = JSON.parse( XMLHttpRequest.responseText);
+          // console.log(msg)
+          if(msg.message == "Course not found"){
+            document.getElementById("clist").innerHTML = msg.message;
+          }
+          document.getElementById("loader1").style.visibility = "hidden";
+        // alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+    },
+    })
+      // clist
+      // <tr>
+      //           <th scope="row">1</th>
+      //           <td>Mark</td>
+      //           <td>Otto</td>
+      //           <td>@mdo</td>
+      //         </tr>
+    }
+
+    function unenroll(sid, cid){
+      var data = JSON.stringify({sid: sid, cid: cid});
+      $.ajax({
+        type: "post",
+        data: data,
+        contentType: "application/json",
+        url: `${baseurl}/unenrol-student`,
+        success: function (result) {
+          // console.log(result)
+          // created_at
+          Swal.fire({
+                                  icon: 'success',
+                                  title: 'Successful!',
+                                  text: result.msg,
+                                  allowOutsideClick: false
+                                })
+                                $( 'button.swal2-confirm' ).click(function() {
+                                  location.reload();
+                                });
+          
+            document.getElementById("loader1").style.visibility = "hidden";
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+          var msg = JSON.parse( XMLHttpRequest.responseText);
+          console.log(msg)
+          // if(msg.message == "Course not found"){
+          //   document.getElementById("clist").innerHTML = msg.message;
+          // }
+          document.getElementById("loader1").style.visibility = "hidden";
+        // alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+    },
+    })
+      // console.log(sid)
+      // console.log(cid)
+    }
+  </script>
