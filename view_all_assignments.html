@@ -2,7 +2,20 @@
   .haove:hover{
     cursor: pointer;
   }
+  #spinner-div {
+  position: fixed;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 2;
+}
 </style>
+<link rel="stylesheet" href="./assets/bootstrap/css/prism.css">
+<script src="./assets/bootstrap/js/prism.js"></script>
 <div class="m-3">
   <div class="form-group">
     <label for="clist">Course Name:</label>
@@ -54,7 +67,7 @@
                 <th scope="col">Submitted Results/Answer</th>
                 <th scope="col">Correct Results/Answer</th>
                 <th scope="col">Submitted on</th>
-                <!-- <th scope="col"></th> -->
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody id="submissionslist">
@@ -70,7 +83,66 @@
     </div>
   </div>
 
+  <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel1">Submission Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <div id="spinner-div" class="pt-5">
+            <div class="spinner-border text-primary" role="status">
+            </div>
+          </div>
+          <!-- <h3>
+            Question: 
+          </h3>
+          <p id="question">
 
+          </p>
+          <hr> -->
+          <h3>
+            Submitted Answer: 
+          </h3>
+          <p id="answer">
+
+          </p>
+          <hr>
+
+          <!-- <div class="form-group"> -->
+          <!-- <h3>
+            Write Code: 
+          </h3> -->
+          <!-- <textarea name="codearea" id="codearea" class="col-12 form-control" oninput="updateprism(this.value);" rows="3"></textarea> -->
+        <!-- </div> -->
+        <pre><code class="language-java" id="prismcodehere1">
+        </code></pre>
+          <div class="col-12 text-right">
+            <button id="execute_code" onclick="sendcodetoexecute()" class="btn btn-primary btn-sm">Execute</button>
+          </div>
+          <!-- <h5>
+            Note: You can execute the code as many times as you want
+            <br>However, you can submit your assignment only once.
+          </h5> -->
+          <div class="col-12 d-none" id="outputarea">
+            <h3 >
+              Output: 
+            </h3>
+            <p id="output"></p>
+          </div>
+          <!-- <input type="text" style="visibility: hidden;" id="aid"> -->
+          <!-- <div class="text-center">
+            <button id="submittionsbutton" class="btn-outline-primary btn" disabled onclick="add_submission()">Submit Assignment</button>
+          </div> -->
+          
+      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <script>
 //       var request;
 //       $("#statusform").submit(function (event) {
@@ -229,6 +301,7 @@ function view_submissions(aid) {
         <td>${element.sanswer}</td>
         <td>${element.aanswer}</td>
         <td>${element.submitted_on}</td>
+        <td><button class="btn btn-primary" onclick='details_view("${element.subid}")'>View Details</button></td>
       </tr>`;
           });
           
@@ -244,92 +317,131 @@ function view_submissions(aid) {
         // alert("Status: " + textStatus); alert("Error: " + errorThrown); 
     },
     })
-      // clist
-      // <tr>
-      //           <th scope="row">1</th>
-      //           <td>Mark</td>
-      //           <td>Otto</td>
-      //           <td>@mdo</td>
-      //         </tr>
+      
 
 }
-    // function myfunction(x){
-    //   // alert(x);
-    //   document.getElementById("clist").innerHTML = "";
-    //   var i = 0;
-    //   $('#exampleModal').modal('show')
-    //   // /get-courses-of-one-student/:id
-    //   $.ajax({
-    //     type: "get",
-    //     contentType: "application/json",
-    //     url: `${baseurl}/get-courses-of-one-student/${x}`,
-    //     success: function (result) {
-    //       // console.log(result)
-    //       // created_at
-    //       result.forEach(element => {
-    //         document.getElementById("clist").innerHTML += `<tr>
-    //     <th scope="row">${++i}</th>
-    //     <td>${element.cname}</td>
-    //     <td>${element.created_at}</td>
-    //     <td><button class="btn btn-primary"  onclick="unenroll('${x}', ${element.id})">Unenroll</button></td>
-        
-    //   </tr>`;
-    //       });
-          
-    //         document.getElementById("loader1").style.visibility = "hidden";
-    //     },
-    //     error: function(XMLHttpRequest, textStatus, errorThrown) { 
-    //       var msg = JSON.parse( XMLHttpRequest.responseText);
-    //       // console.log(msg)
-    //       if(msg.message == "Course not found"){
-    //         document.getElementById("clist").innerHTML = msg.message;
-    //       }
-    //       document.getElementById("loader1").style.visibility = "hidden";
-    //     // alert("Status: " + textStatus); alert("Error: " + errorThrown); 
-    // },
-    // })
-    //   // clist
-    //   // <tr>
-    //   //           <th scope="row">1</th>
-    //   //           <td>Mark</td>
-    //   //           <td>Otto</td>
-    //   //           <td>@mdo</td>
-    //   //         </tr>
-    // }
+   
+    function details_view(subid) {
+      // alert(x);
+      // console.log(x);
+      // var test = JSON.parse(x)
+      // console.log(test)
+      $('#exampleModal').modal('hide')
+      $('#exampleModal1').modal('show')
 
-    // function unenroll(sid, cid){
-    //   var data = JSON.stringify({sid: sid, cid: cid});
-    //   $.ajax({
-    //     type: "post",
-    //     data: data,
-    //     contentType: "application/json",
-    //     url: `${baseurl}/unenrol-student`,
-    //     success: function (result) {
-    //       // console.log(result)
-    //       // created_at
-    //       Swal.fire({
-    //                               icon: 'success',
-    //                               title: 'Successful!',
-    //                               text: result.msg,
-    //                               allowOutsideClick: false
-    //                             })
-    //                             $( 'button.swal2-confirm' ).click(function() {
-    //                               location.reload();
-    //                             });
+      // document.getElementById("question").innerHTML = question;
+      // document.getElementById("answer").innerHTML = aanswer;
+      // var prismcodehere = document.getElementById("prismcodehere1");
+      // for(var i = 0;i< code.length;i++){
+      //   prismcodehere.innerHTML += code[i].replace(new RegExp("&", "g"), "&").replace(new RegExp("<", "g"), "<"); /* Global RegExp */
+      // }
+      
+      // prismcodehere.innerText = x;
+      // Prism.highlightElement(prismcodehere);
+    //   document.getElementById("submissionslist").innerHTML = "";
+      $.ajax({
+        type: "get",
+        contentType: "application/json",
+        url: `${baseurl}/get-one-submission/${subid}`,
+        success: function (result) {
+          // console.log(result)
+          document.getElementById("answer").innerHTML = result[0].answer;
+          var code = result[0].code;
+          // console.log(code)
+          // document.getElementById("answer").innerHTML = result.answer;
+                var prismcodehere = document.getElementById("prismcodehere1");
+              for(var i = 0;i< code.length;i++){
+                prismcodehere.innerHTML += code[i].replace(new RegExp("&", "g"), "&").replace(new RegExp("<", "g"), "<"); /* Global RegExp */
+              }
+              Prism.highlightElement(prismcodehere);
+          // created_at
+          // <th scope="col">#</th>
+          //       <th scope="col">Student Name</th>
+          //       <th scope="col">Student Email</th>
+          //       <th scope="col">Submitted Code</th>
+          //       <th scope="col">Submitted Results/Answer</th>
+          //       <th scope="col">Correct Results/Answer</th>
+          //       <th scope="col">Submitted on</th>
+      //     result.forEach(element => {
+      //       document.getElementById("submissionslist").innerHTML += `<tr>
+      //   <th scope="row">${++j}</th>
+      //   <td>${element.aname}</td>
+      //   <td>${element.sname}</td>
+      //   <td>${element.email}</td>
+      //   <td>${element.question}</td>
+      //   <td>${element.code}</td>
+      //   <td>${element.sanswer}</td>
+      //   <td>${element.aanswer}</td>
+      //   <td>${element.submitted_on}</td>
+      //   <td><button class="btn btn-primary" onclick="details_view('${element.id}')">View Details</button></td>
+      // </tr>`;
+          // });
           
-    //         document.getElementById("loader1").style.visibility = "hidden";
-    //     },
-    //     error: function(XMLHttpRequest, textStatus, errorThrown) { 
-    //       var msg = JSON.parse( XMLHttpRequest.responseText);
-    //       console.log(msg)
-    //       // if(msg.message == "Course not found"){
-    //       //   document.getElementById("clist").innerHTML = msg.message;
-    //       // }
-    //       document.getElementById("loader1").style.visibility = "hidden";
-    //     // alert("Status: " + textStatus); alert("Error: " + errorThrown); 
-    // },
-    // })
-    //   // console.log(sid)
-    //   // console.log(cid)
-    // }
+            document.getElementById("loader1").style.visibility = "hidden";
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+          var msg = JSON.parse( XMLHttpRequest.responseText);
+          // console.log(msg)
+          // if(msg.message == "Course not found"){
+          //   document.getElementById("clist").innerHTML = msg.message;
+          // }
+          document.getElementById("loader1").style.visibility = "hidden";
+        // alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+    },
+    })
+    }
+
+    function sendcodetoexecute(){
+      $("#spinner-div").show();
+      var code = document.getElementById("prismcodehere1").innerText;
+      console.log(code)
+  var output = document.getElementById("output");
+  document.getElementById("outputarea").classList.remove("d-none");
+  
+  var data = JSON.stringify({code: code});
+      $.ajax({
+        type: "post",
+        data: data,
+        contentType: "application/json",
+        url: `${baseurl}/execute-code`,
+        success: function (result) {
+          // console.log(result)
+          if(result.output == "Compilation Error"){
+            output.style.color = "red";
+            output.innerHTML = `${result.output} - There is some error in your code`;
+          }
+          else{
+            output.style.color = "green";
+            output.innerHTML = `${result.output}`;
+            // document.getElementById('submittionsbutton').disabled = false;
+          }
+          
+          $("#spinner-div").hide(); //Request is complete so hide spinner
+          // created_at
+          // Swal.fire({
+          //                         icon: 'success',
+          //                         title: 'Successful!',
+          //                         text: result.msg,
+          //                         allowOutsideClick: false
+          //                       })
+          //                       $( 'button.swal2-confirm' ).click(function() {
+          //                         location.reload();
+          //                       });
+          
+            document.getElementById("loader1").style.visibility = "hidden";
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+          var msg = JSON.parse( XMLHttpRequest.responseText);
+          console.log(msg)
+          $("#spinner-div").hide(); //Request is complete so hide spinner
+
+          // if(msg.message == "Course not found"){
+          //   document.getElementById("clist").innerHTML = msg.message;
+          // }
+          document.getElementById("loader1").style.visibility = "hidden";
+        // alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+    },
+    })
+    }
+
   </script>
