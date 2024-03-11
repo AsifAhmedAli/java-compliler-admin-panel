@@ -9,13 +9,17 @@
           </div>
         <div class="mb-3">
           <label for="question" class="form-label">Question</label>
-          <textarea name="question" id="question" cols="30"  class="form-control" rows="10"></textarea>
+          <textarea name="question" id="question" cols="30"  class="form-control" rows="2"></textarea>
           <!-- <input type="email" name="email"> -->
         </div>
         <div class="mb-3">
-          <label for="answer" class="form-label">Answer</label>
-          <input type="text" name="answer" class="form-control" id="answer">
+          <label for="answer">Answer</label>
+          <textarea type="text" name="answer" oninput="updateCodeHighlighting()" id="code-input" class="form-control" rows="5"></textarea>
         </div>
+        <pre><code class="language-java" id="prismcodehere1">
+        </code></pre>
+        <!-- <p id="code-temp"></p> -->
+        <!-- <div id="code-temp"></div> -->
         <div class="mb-3">
             <label for="cid" class="form-label">Course</label>
             <select id="cid" class="form-control">
@@ -64,7 +68,7 @@ $("#add_assignment_form").submit(function (event) {
     // var formData = new FormData(this);
     var aname = $("#aname").val();
     var question = $("#question").val();
-    var answer = $("#answer").val();
+    var answer = $("#code-input").val();
     var cid = $("#cid").val();
     
     // var dateFormat= new Date();
@@ -106,4 +110,67 @@ $("#add_assignment_form").submit(function (event) {
     },
     });
 });
+
+// document.addEventListener('DOMContentLoaded', function () {
+//     // Get the textarea element
+//     const codeInput = document.getElementById('code-input');
+
+//     // Add an event listener to the textarea to update the highlighting on input
+//     codeInput.addEventListener('input', function () {
+//         updateCodeHighlighting();
+//     });
+
+//     // Initial highlighting
+//     updateCodeHighlighting();
+// });
+
+async function updateCodeHighlighting() {
+    // Get the code from the textarea
+    // console.log("hellow")
+    const code = document.getElementById('code-input').value;
+    // console.log(code)
+    // try {
+    //   document.getElementById("loader1").style.visibility = "visible";
+    // $.ajax({
+    //     type: "post",
+    //     contentType: "application/json",
+    //     data: JSON.stringify({
+    //       code: code
+    //     }),
+    //     url: `${baseurl}/get-prettified-code`,
+    //     success: function (result) {
+    //                 console.log(result);
+                    const highlightedCode = Prism.highlight(code, Prism.languages.java, 'java');
+
+// Display the highlighted code
+document.getElementById('prismcodehere1').innerHTML = highlightedCode;
+            // document.getElementById("loader1").style.visibility = "hidden";
+        // },
+    //     error: function(XMLHttpRequest, textStatus, errorThrown) { 
+    //       var msg = JSON.parse( XMLHttpRequest.responseText);
+    //       // console.log(msg)
+    //       if(msg.message == "Course not found"){
+    //         document.getElementById("clist").innerHTML = msg.message;
+    //       }
+    //       document.getElementById("loader1").style.visibility = "hidden";
+    //     // alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+    // },
+    // })
+
+      // Use Prism to highlight the code
+    // const formattedCode = await formatJavaCode(code);
+
+  // } catch (error) {
+  //       console.error('Error formatting code:', error);
+  //   }
+}
+
+// async function formatJavaCode(code) {
+//       // Load the Google Java Format module
+//       const formattedText = prettier.format(code, {
+//       parser: "java",
+//       tabWidth: 2
+//     });
+//       return formattedCode;
+//     }
  </script>
