@@ -3,7 +3,7 @@
     cursor: pointer;
   }
 </style>
-<table class="table">
+<table class="table" style="color: white !important;">
     <thead>
         <tr>
             <th scope="col">#</th>
@@ -131,7 +131,7 @@ var statusq;
             }
             document.getElementById("student_list").innerHTML += `<tr>
         <th scope="row">${++i}</th>
-        <td style="color: blue;" class="haove" onclick="myfunction('${element.id}')">${element.sname}</td>
+        <td style="color: white;text-decoration: underline;" class="haove" onclick="myfunction('${element.id}')">${element.sname}</td>
         <td>${element.created_at}</td>
         <td>${element.email}</td>
         <td>${element.pass}</td>
@@ -160,13 +160,13 @@ var statusq;
         contentType: "application/json",
         url: `${baseurl}/get-courses-of-one-student/${x}`,
         success: function (result) {
-          // console.log(result)
+          console.log(result)
           // created_at
           result.forEach(element => {
             document.getElementById("clist").innerHTML += `<tr>
         <th scope="row">${++i}</th>
-        <td>${element.cname}</td>
-        <td>${element.created_at}</td>
+        <td>${element[0].cname}</td>
+        <td>${element[0].created_at}</td>
         <td><button class="btn btn-primary"  onclick="unenroll('${x}', ${element.id})">Unenroll</button></td>
         
       </tr>`;

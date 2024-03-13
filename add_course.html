@@ -28,7 +28,7 @@
  <h3 class="text-center my-5">Courses List</h3>
  <div class="col-12 my-5 ">
    
-  <table class="table table-striped">
+  <table class="table table-striped" style="color: white !important;">
     <thead>
       <tr>
         <th scope="col">#</th>
@@ -45,6 +45,26 @@
 
  <script>
    var i = 0;
+   function convertToEST(timestamp) {
+  const date = new Date(timestamp);
+
+  // Specify the timezone as 'America/New_York' for Eastern Standard Time
+  const options = {
+    timeZone: 'America/New_York',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+  };
+
+  // Format the date in EST
+  const estDateTime = new Intl.DateTimeFormat('en-US', options).format(date);
+
+  return estDateTime;
+}
+var estDateTime;
    $.ajax({
         type: "get",
         contentType: "application/json",
@@ -53,10 +73,11 @@
           // console.log(result)
           
           result.forEach(element => {
+            estDateTime = convertToEST(element.created_at);
             document.getElementById("course_list").innerHTML += `<tr>
         <th scope="row">${++i}</th>
         <td>${element.cname}</td>
-        <td>${element.created_at}</td>
+        <td>${estDateTime}</td>
       </tr>`;
           });
           

@@ -13,6 +13,9 @@
   background-color: rgba(255, 255, 255, 0.8);
   z-index: 2;
 }
+.ql-hidden{
+  display: none !important;
+}
 </style>
 <link rel="stylesheet" href="./assets/bootstrap/css/prism.css">
 <script src="./assets/bootstrap/js/prism.js"></script>
@@ -26,7 +29,7 @@
   </div>
   <hr>
   <div class="table-responsive">
-<table id="atable" class="table d-none">
+<table id="atable" style="color: white !important;" class="table d-none">
     <thead>
         <tr>
             <th scope="col">#</th>
@@ -83,7 +86,7 @@
     </div>
   </div>
 
-  <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+  <div class="modal fade" style="color: #858796 !important;" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
@@ -144,66 +147,27 @@
     </div>
   </div>
   <script>
-//       var request;
-//       $("#statusform").submit(function (event) {
-//         var myModal = new bootstrap.Modal(document.getElementById("exampleModal"), {
-//             keyboard: false,
-//         });
-//         myModal.hide();
-     
-//   // Prevent default posting of form - put here to work in case of errors
-//   event.preventDefault();
+    function convertToEST(timestamp) {
+  const date = new Date(timestamp);
 
-//   // Abort any pending request
-//   if (request) {
-//     request.abort();
-//   }
-//   document.getElementById("loader1").style.visibility = "visible";
-//   var status = document.getElementById("status").value;
-//   var orderid = document.getElementById("orderid").value;
-//   data = JSON.stringify({
-//     status: status,
-//   });
-//   // console.log(devicetype);
-//   $.ajax({
-//     type: "post",
-//     url: `${baseurl}/admin/update-order-status/${orderid}`,
-//     timeout: 0,
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//       "Content-Type": "application/json",
-//     },
-//     data: data,
-//     success: function (response) {
-//       Swal.fire({
-//         icon: "success",
-//         title: "Successful!",
-//         text: "Order Updated Successfully",
-//         allowOutsideClick: false,
-//       });
-//       $("button.swal2-confirm").click(function () {
-//         // all_orders();
-//           window.location.reload();
-//       });
-//       document.getElementById("loader1").style.visibility = "hidden";
-//     },
-//     error: function (response) {
-//     //   console.log(response);
+  // Specify the timezone as 'America/New_York' for Eastern Standard Time
+  const options = {
+    timeZone: 'America/New_York',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+  };
 
-//     //   if (response.responseJSON.message == "Already Ordered") {
-//     //     Swal.fire({
-//     //       icon: "error",
-//     //       title: "Failed!",
-//     //       text: response.responseJSON.message,
-//     //       allowOutsideClick: false,
-//     //     });
-//     //     $("button.swal2-confirm").click(function () {
-//     //       window.location.reload();
-//     //     });
-//     //   }
-//     },
-//   });
-// });
+  // Format the date in EST
+  const estDateTime = new Intl.DateTimeFormat('en-US', options).format(date);
+
+  return estDateTime;
+}
+var estDateTime;
+
 document.getElementById("loader1").style.visibility = "visible";
 $.ajax({
         type: "get",
@@ -227,7 +191,8 @@ $.ajax({
 function getassignments(x) {
   // console.log(x.value);
   var cid = x.value;
-var i = 0;
+
+// console.log(i)
 var statusq;
 document.getElementById("a_list").innerHTML = "";
 document.getElementById("loader1").style.visibility = "visible";
@@ -240,7 +205,11 @@ document.getElementById("loader1").style.visibility = "visible";
           // created_at
           
           document.getElementById("atable").classList.remove("d-none");
+          var i = 0;
           result.forEach(element => {
+            // console.log(element.created_at)
+            estDateTime = convertToEST(element.created_on);
+            console.log(i)
             if(element.status1 == 1){
               statusq = "Active"
             }
@@ -250,7 +219,7 @@ document.getElementById("loader1").style.visibility = "visible";
             document.getElementById("a_list").innerHTML += `<tr>
         <th scope="row">${++i}</th>
         <td>${element.aname}</td>
-        <td>${element.created_on}</td>
+        <td>${estDateTime}</td>
         <td>${element.question}</td>
         <td>${element.answer}</td>
         <td>${statusq}</td>
@@ -258,7 +227,12 @@ document.getElementById("loader1").style.visibility = "visible";
         
       </tr>`;
           });
-          
+          var editableElements = document.getElementsByClassName('ql-editor');
+
+// Iterate through the elements and make them non-editable
+            for (var i = 0; i < editableElements.length; i++) {
+              editableElements[i].contentEditable = false;
+            }
             document.getElementById("loader1").style.visibility = "hidden";
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) { 
@@ -274,7 +248,6 @@ function view_submissions(aid) {
       // document.getElementById("clist").innerHTML = "";
       var j = 0;
       $('#exampleModal').modal('show')
-      // /get-courses-of-one-student/:id
       document.getElementById("submissionslist").innerHTML = "";
       $.ajax({
         type: "get",
@@ -291,6 +264,9 @@ function view_submissions(aid) {
           //       <th scope="col">Correct Results/Answer</th>
           //       <th scope="col">Submitted on</th>
           result.forEach(element => {
+            console.log(element.submitted_on)
+            estDateTime = convertToEST(element.submitted_on);
+            
             document.getElementById("submissionslist").innerHTML += `<tr>
         <th scope="row">${++j}</th>
         <td>${element.aname}</td>
@@ -300,7 +276,7 @@ function view_submissions(aid) {
         <td>${element.code}</td>
         <td>${element.sanswer}</td>
         <td>${element.aanswer}</td>
-        <td>${element.submitted_on}</td>
+        <td>${estDateTime}</td>
         <td><button class="btn btn-primary" onclick='details_view("${element.subid}")'>View Details</button></td>
       </tr>`;
           });
@@ -350,6 +326,7 @@ function view_submissions(aid) {
           // console.log(code)
           // document.getElementById("answer").innerHTML = result.answer;
                 var prismcodehere = document.getElementById("prismcodehere1");
+                prismcodehere.innerHTML = "";
               for(var i = 0;i< code.length;i++){
                 prismcodehere.innerHTML += code[i].replace(new RegExp("&", "g"), "&").replace(new RegExp("<", "g"), "<"); /* Global RegExp */
               }

@@ -11,12 +11,8 @@
     <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prism-themes/themes/prism-material-light.css">
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/google-java-format@1.11.0/lib/google-java-format-1.11.0-all-deps.jar"></script> -->
-    <!-- <script src="https://unpkg.com/prettier@3.2.5/standalone.js"></script> -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/prettier-plugin-java@2.6.0/+esm"></script> -->
-
-    <!-- <script src="https://unpkg.com/@prettier/plugin-java@0.3.0/dist/index.js"></script> -->
-    
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-java.min.js"></script>
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="./assets/js/all.js"></script>
@@ -34,11 +30,19 @@
     overflow-x: auto;
     white-space: nowrap;
 }
+#content{
+  background-image: url("./assets/img/avatars/Group-48095597-1.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #17181A;
+  color: white !important;
+}
     </style>
 </head>
 <body id="page-top">
     <div id="wrapper">
-        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background-color: #3b5fdd !important;background-image: none  !important;">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background-color: #17181A !important;background-image: none  !important;">
             <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
                     <div class="sidebar-brand-text mx-3"><span>Admin Panel</span></div>
                 </a>
@@ -108,6 +112,7 @@
     <!-- <script src="./auth.js"></script> -->
     <script>
 // var token = localStorage.getItem("admin_token");
+        var quill = new Quill();
         function add_student(){
             document.getElementById("loader1").style.visibility = "visible";
             $.ajax({

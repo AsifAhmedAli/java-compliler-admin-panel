@@ -1,5 +1,18 @@
 
+<style>.ql-toolbar .ql-stroke {
+  fill: none;
+  stroke: #fff;
+}
 
+.ql-toolbar .ql-fill {
+  fill: #fff;
+  stroke: none;
+}
+
+.ql-toolbar .ql-picker {
+  color: #fff;
+}
+</style>
   <div class="col-12">
     <form id="add_assignment_form">
 
@@ -8,15 +21,15 @@
             <input type="text" name="name" class="form-control" id="aname">
           </div>
         <div class="mb-3">
-          <label for="question" class="form-label">Question</label>
-          <textarea name="question" id="question" cols="30"  class="form-control" rows="2"></textarea>
+          <label for="editor" class="form-label" >Question</label>
+          <div name="question"  id="editor" cols="30" style="border-radius: 0px !important;" class="form-control"></div>
           <!-- <input type="email" name="email"> -->
         </div>
         <div class="mb-3">
           <label for="answer">Answer</label>
           <textarea type="text" name="answer" oninput="updateCodeHighlighting()" id="code-input" class="form-control" rows="5"></textarea>
         </div>
-        <pre><code class="language-java" id="prismcodehere1">
+        <pre style="background-color: white !important;"><code class="language-java" id="prismcodehere1">
         </code></pre>
         <!-- <p id="code-temp"></p> -->
         <!-- <div id="code-temp"></div> -->
@@ -67,7 +80,7 @@ $("#add_assignment_form").submit(function (event) {
     // setup some local variables
     // var formData = new FormData(this);
     var aname = $("#aname").val();
-    var question = $("#question").val();
+    var question = document.getElementById("editor").innerHTML;
     var answer = $("#code-input").val();
     var cid = $("#cid").val();
     
@@ -173,4 +186,16 @@ document.getElementById('prismcodehere1').innerHTML = highlightedCode;
 //     });
 //       return formattedCode;
 //     }
+// const toolbarOptions = [
+//   [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+// ];
+
+  quill = new Quill('#editor', {
+  modules: {
+    // toolbar: toolbarOptions
+  },
+    theme: 'snow'
+  });
  </script>
+
+ 
